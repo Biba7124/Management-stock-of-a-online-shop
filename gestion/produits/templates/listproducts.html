@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nos produits | GAMELUX{% endblock %} 
+
+{% block content %}
+<form method="get" class="row g-3 mb-4">
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ search_query }}" class="form-control" placeholder="Rechercher un produit...">
+    </div>
+    <div class="col-md-3">
+        <select name="category" class="form-select">
+            <option value="all" {% if selected_category == 'all' %}selected{% endif %}>Toutes catégories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="stock" class="form-select">
+            <option value="" {% if not selected_stock %}selected{% endif %}>Tous stocks</option>
+            <option value="available" {% if selected_stock == 'available' %}selected{% endif %}>En stock</option>
+            <option value="out" {% if selected_stock == 'out' %}selected{% endif %}>Rupture de stock</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </div>
+</form>
+
+<div class="container mt-5">
+    <h1 class=" fw-bold text-center text-uppercase text-light">
+        🛒 Catalogue des Produits Gaming
+        <span class="badge bg-secondary">GAMELUX</span>
+    </h1>
+    
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered table-theme text-center">            
+            <thead class="table-dark text-uppercase">
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Catégorie</th>
+                    <th scope="col">💰 Prix</th>
+                    <th scope="col">📦 Stock</th>
+                    <th scope="col">✏️ Modifier</th>
+                    <th scope="col">🗑️ Supprimer</th>
+                </tr>
+            </thead>
+            <tbody> 
+                {% for produit in produits %}
+                <tr>
+                    <td>
+                        <a href="{% url 'products_detail' produit.id %}" class="fw-bold text-info">
+                            {{ produit.name }}
+                        </a>
+                    </td>
+                    <td>{{ produit.category }}</td>
+                    <td><strong>{{ produit.price }} MAD</strong></td>
+                    <td>
+                        {% if produit.countInStock > 10 %}
+                            <span class="badge bg-success">
+                                <i class="fa fa-check-circle me-1"></i> En stock ({{ produit.countInStock }})
+                            </span>
+                        {% elif produit.countInStock > 0 %}
+                            <span class="badge bg-warning text-dark">
+                                <i class="fa fa-exclamation-circle me-1"></i> Limité ({{ produit.countInStock }})
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                <i class="fa fa-times-circle me-1"></i> Rupture
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'product_update' produit.id %}" title="Modifier" class="btn btn-sm btn-outline-warning">
+                            <i class="fa fa-pen"></i>
+                        </a>
+                    </td>
+                    <td>
+                        <form action="{% url 'product_delete' produit.id %}" method="post" onsubmit="return confirm('Confirmer la suppression ?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-muted">Aucun produit disponible pour le moment.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-end mt-4">
+        <a class="btn btn-success " href="{% url 'product_create' %}">
+            <i class="fa-plus me-1"></i> Ajouter un nouveau produit
+        </a>
+    </div>
+</div>
+{% endblock %}

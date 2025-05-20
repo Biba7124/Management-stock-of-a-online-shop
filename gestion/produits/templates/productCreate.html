@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load custom_tag %}
+
+{% block title %}Ajouter un nouveau produit{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="bg-dark p-5 rounded shadow-sm border border-secondary">
+    <h2 class="mb-4 text-light">
+      <i class="fas fa-plus-circle me-2 text-success"></i>Créer un produit
+    </h2>
+
+    {% if form.errors %}
+      <div class="alert alert-danger">
+        <strong>Erreurs détectées :</strong>
+        <ul class="mb-0">
+          {% for field in form %}
+            {% for error in field.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+      {% csrf_token %}
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-heading me-2 text-primary"></i>Nom</label>
+          {{ form.name|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-layer-group me-2 text-primary"></i>Catégorie</label>
+          {{ form.category|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-dollar-sign me-2 text-primary"></i>Prix</label>
+          {{ form.price|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-industry me-2 text-primary"></i>Marque</label>
+          {{ form.brand|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-image me-2 text-primary"></i>Image</label>
+          {{ form.image|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-user me-2 text-primary"></i>Utilisateur</label>
+          {{ form.user|addclass:"form-control" }}
+        </div>
+
+        <div class="col-12">
+          <label class="form-label"><i class="fas fa-align-left me-2 text-primary"></i>Description</label>
+          {{ form.description|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-star me-2 text-primary"></i>Évaluation</label>
+          {{ form.rating|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-comments me-2 text-primary"></i>Nombre d'avis</label>
+          {{ form.numReviews|addclass:"form-control" }}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label"><i class="fas fa-boxes me-2 text-primary"></i>Stock</label>
+          {{ form.countInStock|addclass:"form-control" }}
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button type="submit" class="btn btn-success">
+          <i class="fas fa-save me-1"></i>Sauvegarder
+        </button>
+        <a href="{% url 'products' %}" class="btn btn-outline-light">
+          <i class="fas fa-times me-1"></i>Annuler
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
